@@ -1,0 +1,88 @@
+﻿@using UniversityManagementApp.Models 
+@model UniversityManagementApp.Models.Department
+<link href="~/tablestyle.css" rel="stylesheet" />
+ <style>th{background-color: gray;}</style>
+ 
+ @{
+     
+     Layout = "~/Views/_Layout.cshtml";
+}
+
+       
+<div>
+    <fieldset style="width: 600px;margin: 50px auto">
+        <legend style="font-size: xx-large">Save Department</legend>
+        <form method="post" action=Save>
+            <table style="margin: 50px auto">
+                <tr>
+                    <td ><labe>Code</labe></td>
+                    <td ><input type="text" id="code" placeholder="Code" name="code" required></td>
+                </tr>
+                <tr>
+                    <td ><label for="NameLabel">Name</label></td>
+                    <td > <input type="text" id="name" placeholder="Name" name="name" required></td>
+                </tr>
+
+                <tr>
+                    <td></td>
+                    <td ><input type="submit" value="Submit"/></td>
+                </tr>
+
+
+            </table>
+           
+        </form>
+        @if (ViewBag.Message != null)
+        {
+            <p>@ViewBag.Message</p>
+        }
+    </fieldset>
+</div>
+       <br />
+        <table style="margin: 0px auto">
+         
+                <th>Code</th>
+                <th>Name</th>
+         
+                             
+                @foreach (var department in ((List<Department>)ViewBag.departmentList))
+                {
+                    <tr>
+                        <td>@department.Code</td>
+                        <td>@department.Name</td>
+                    </tr>
+                }
+           
+        </table>
+
+
+<script>
+    
+
+    //$(document).ready(function () {
+    //    SearchText();
+    //});
+    //function SearchText() {
+    //    $("#billNoTextBox").autocomplete({
+    //        source: function (request, response) {
+    //            $.ajax({
+    //                type: "POST",
+    //                contentType: "application/json; charset=utf-8",
+    //                url: "Default.aspx/GetBillNo",
+    //                data: "{'billNo':'" + document.getElementById('billNoTextBox').value + "'}",
+    //                dataType: "json",
+    //                success: function (data) {
+    //                    response(data.d);
+    //                },
+    //                error: function (result) {
+    //                    alert("No Match");
+    //                }
+    //            });
+    //        }
+    //    });
+    //}
+</script> 
+
+
+
+

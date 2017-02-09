@@ -1,0 +1,101 @@
+﻿@using UniversityManagementApp.Models
+@model UniversityManagementApp.Models.Course
+<link href="~/tablestyle.css" rel="stylesheet"/>
+<style>
+    th {
+         border: 1px solid black;
+    }
+</style>
+@*@{
+    ViewBag.Title = "Course";
+    
+}*@
+
+ 
+
+       
+
+<fieldset style="width: 600px; margin: 50px auto">
+    <legend style="font-size: xx-large">Save Course</legend>
+    <form method="post" action="Save" id="courseEntry">
+        <table>
+            <tr>
+                <td ><label for="CodeLabel">Code</label></td>
+                <td ><input type="text" id="code" name="code" required></td>
+            </tr>
+            <tr>
+                <td > <label for="NameLabel">Name</label></td>
+                <td > <input type="text" id="name" name="name" required></td>
+            </tr>
+
+            <tr>
+                <td ><label for="creditLabel">Credit</label></td>
+                <td > <input type="number" id="credit" name="credit" required></td>
+            </tr>
+
+            <tr>
+                <td ><label for="descriptionLabel">Description</label></td>
+                <td ><textarea id="description" name="description"></textarea></td>
+            </tr>
+
+            <tr>
+                <td ><label for="departmentLabel">Department</label></td>
+                <td > <select id="departmentId" name="departmentId" required>
+                    <option value="">Select Department</option>
+                    @foreach (var department in ((List<Department>) ViewBag.departmentList))
+                    {
+                        <option value="@department.Id">@department.Name</option>
+                    }
+                </select></td>
+            </tr>
+
+            <tr >
+                <td > <label for="semesterLabel">Semester</label></td>
+                <td ><select id="semesterId" name="semesterId" required>
+                    <option value="">Select Semester</option>
+
+                    @foreach (var semester in ((List<Semester>) ViewBag.semesterList))
+                    {
+                        <option value="@semester.Id">@semester.Name</option>
+                    }
+                </select></td>
+            </tr>
+
+            <tr>
+                <td></td>
+                <td ><input type="submit" value="Submit"/></td>
+            </tr>
+        </table>
+    </form>
+    @if (ViewBag.Message != null)
+    {
+        <p>@ViewBag.Message</p>
+    }
+</fieldset>
+
+        <table >
+            
+                <tr>
+                    <th>Code</th>
+                    <th>Name</th>
+                    <th>Credit</th>
+                    <th>Description</th>
+                    <th>Department</th>
+                    <th>Semester</th>
+                </tr>
+            
+
+          
+                @foreach (var courseView in ((List<CourseViewModel>)ViewBag.courseViewList))
+                {
+                    <tr>
+                        <td>@courseView.Code</td>
+                        <td>@courseView.Name</td>
+                        <td>@courseView.Credit</td>
+                        <td>@courseView.Description</td>
+                        <td>@courseView.Department</td>
+                        <td>@courseView.Semester</td>
+                    </tr>
+                }
+           
+         </table>

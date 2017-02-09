@@ -1,0 +1,106 @@
+﻿@using UniversityManagementApp.Models
+<link href="~/tablestyle.css" rel="stylesheet" />
+<style>
+    th {
+        background-color: gray;
+        padding: 8px;
+    }
+</style>
+@{
+    ViewBag.Title = "Teacher";
+   
+
+}
+
+
+<fieldset style="width: 600px; margin: 50px auto">
+    <legend style="font-size: xx-large">Save Teacher</legend>
+    <form method="post" action="Save" id="teacherEntry">
+        <table>
+             <tr>
+                <td > <label for="nameLabel">Name</label></td>
+                <td > <input type="text" id="code" placeholder="Name" name="name" required></td>
+            </tr>
+            <tr >
+                <td > <label for="addressLabel">Address</label></td>
+                <td > <textarea id="Address" name="address" placeholder="Address" required=""></textarea></td>
+            </tr>
+            <tr>
+                <td ><label for="emailLabel">E-mail</label></td>
+                <td > <input type="email" id="email" placeholder="E-mail" name="email" required></td>
+            </tr>
+            <tr>
+                <td > <label for="contactNoLabel">Contact No</label></td>
+                <td > <input type="text" id="contactNo" placeholder="Contact No" name="contactNo" required></td>
+            </tr>
+            <tr>
+                <td > <label for="designationLabel">Designation</label></td>
+                <td ><select id="designationId" name="designationId" required>
+                    <option value="">Select Designation</option>
+                    @foreach (var designation in ViewBag.designationList)
+                    {
+                        <option value="@designation.DesignationId">@designation.DesignationName</option>
+                    }
+                </select></td>
+            </tr>
+            <tr>
+                <td><label for="departmentLabel">Department</label></td>
+                <td ><select id="departmentId" name="departmentId" required>
+                    <option value="">Select Department</option>
+                    @foreach (var department in ((List<Department>) ViewBag.departmentList))
+                    {
+                        <option value="@department.Id">@department.Name</option>
+                    }
+                </select></td>
+            </tr>
+            <tr>
+                <td ><label for="creditLabel">Credit</label></td>
+                <td > <input type="text" id="teacherCredit" placeholder="Credit" name="creditToBeTaken" required></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td ><input type="submit" value="Submit"/></td>
+            </tr>
+        </table>
+
+    </form>
+    @if (ViewBag.Message != null)
+    {
+        <p>@ViewBag.Message</p>
+    }
+</fieldset>
+        <br />
+        <table>
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Address</th>
+                <th>Contact No</th>
+                <th>Designation</th>
+                <th>Department</th>
+                <th>Credit to be taken</th>
+            </tr>
+            
+            </thead>
+
+            <tbody>
+                @foreach (var teacher in ((List<TeacherShowAll>)ViewBag.TeacherList))
+                {
+                    <tr>
+                        <td>@teacher.Name</td>
+                        <td>@teacher.Email</td>
+                        <td>@teacher.Address</td>
+                        <td>@teacher.ContactNo</td>
+                        <td>@teacher.DesignationName</td>
+                        <td>@teacher.DepartmentName</td>
+                        <td>@teacher.CreditToBeTaken</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+
+
+
+

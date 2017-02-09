@@ -1,0 +1,58 @@
+﻿@model UniversityManagementApp.Models.Course
+ 
+ 
+
+<p  style="display: none;"></p>
+
+<fieldset style="width: 450px; height: 200px; margin: 50px auto">
+    <legend style="font-size: xx-large">Unallocate Class Room</legend>
+    <form method="post" action="UnallcateAllRoom" id="AllocateClassRoom">
+        <div class="form-group">
+            <input type="button" value="Unallocate Romm" id="unallocateRoom" style="padding: 20px 40px;padding: 20px 40px; margin-left: 112px;  margin-top: 36px;"/>
+        </div>
+
+    </form>
+</fieldset>
+
+@section scripts{
+
+    <script>
+
+    $(document).ready(function () {
+        $("#unallocateRoom").on("click", function () {
+
+            var decision = confirm("Are you sure to unallocate all rooms?");
+
+            if (decision == true) {
+
+                var jsonData = { decision: decision };
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("UnassignAllCourse", "AllocateClassRoom")',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(jsonData),
+                    dataType: "json",
+                    success: function (data) {
+
+                        if (data == true) {
+
+                            $(".bg-info").text("All Rooms Are Unallocated Successffully !").show();
+                        }
+                        else
+                        {
+                            $(".bg-info").text("No Room Available to Unallocate !").show();
+                        }
+                    },
+                });
+
+            }
+            return false;
+
+        });
+    });
+
+    </script>
+
+}
+
+

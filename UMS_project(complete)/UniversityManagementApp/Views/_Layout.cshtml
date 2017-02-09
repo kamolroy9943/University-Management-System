@@ -1,0 +1,68 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+</head>
+<body>                          
+       
+<div>
+        <div >
+            <div>
+                @RenderBody()
+            </div>
+       
+    </div>
+</div>
+
+
+    <script src="~/Scripts/jquery-1.9.1.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/bootstrap-datepicker.min.js"></script>
+    <script>
+        $(function () {
+            $("#departmentEntry").validate({
+                rules: {
+                    code: {
+                        required: true,
+                        minlength: 2,
+                        maxlength: 7
+                    }
+                }
+            });
+
+            $("#courseEntry").validate({
+                rules: {
+                    code:{
+                        required: true,
+                        minlength: 5
+                    },
+                    credit: {
+                        required: true,
+                        number: true,
+                        min: 0.5,
+                        max: 5
+                    }
+                }
+            });
+
+            $("#teacherEntry").validate({
+                rules: {
+                    credit: {
+                        required: true,
+                        number: true,
+                        min: 1,
+                        max: 30
+                    }
+                }
+            });
+
+           $("#roomEntry").validate();
+
+        });
+    </script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

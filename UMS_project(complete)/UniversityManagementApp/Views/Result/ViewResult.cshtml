@@ -1,0 +1,106 @@
+﻿@using System.Collections.Specialized
+@using System.Web.UI.WebControls
+@model UniversityManagementApp.Models.Result
+<link href="~/tablestyle.css" rel="stylesheet" />
+@{
+    ViewBag.Title = "View Result";
+    Layout = "~/Views/_Layout.cshtml";
+}
+  
+
+
+<p  style="display: none;"></p>
+
+
+@using (Html.BeginForm("saveResult", "Result", FormMethod.Post, new { id = "resultEntry" }))
+{
+    <fieldset style="width: 600px; margin: 50px auto;">
+        <legend style="font-size: xx-large">View Result</legend>
+        <table>
+            <tr>
+                <td>@Html.Label("Student Registration Number")</td>
+                <td>
+                    @Html.DropDownListFor(m => m.StudentId, new SelectList(ViewBag.studentList, "StudentId", "RegistrationNo"), "Please Select Reg. No.", new {})
+                    @Html.ValidationMessageFor(m => m.StudentId)
+                </td>
+            </tr>
+
+            <tr>
+                <td> @Html.LabelFor(m => m.Name)</td>
+                <td>
+                    @Html.TextBoxFor(m => m.Name, new {PlaceHolder = "Name", @readonly = "readonly"})
+                    @Html.ValidationMessageFor(model => model.Name)
+                </td>
+            </tr>
+
+            <tr>
+                <td> @Html.LabelFor(m => m.Email)</td>
+                <td>
+                    @Html.TextBoxFor(m => m.Email, new {PlaceHolder = "Email", @readonly = "readonly"})
+                    @Html.ValidationMessageFor(model => model.Email)
+                </td>
+            </tr>
+
+            <tr>
+                <td> @Html.LabelFor(m => m.DepartmentName)</td>
+                <td>
+                    @Html.TextBoxFor(m => m.DepartmentName, new {PlaceHolder = "Department", @readonly = "readonly"})
+                    @Html.ValidationMessageFor(model => model.DepartmentName)
+                    <input type="hidden" name="DepartmentId" id="DepartmentId"/>
+                </td>
+            </tr>
+        </table>
+    </fieldset>
+        @*<input type="submit" value="Save" class="btn btn-primary" />*@
+}
+
+
+<div id="particalViewTable"></div>
+
+@section scripts
+{
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+
+    <script>
+        $(function () {
+
+            $("#StudentId").change(function () {
+                var StudentId = $(this).val();
+                var json = { StudentId: StudentId };
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("GetStudentById", "EnrollCourse")',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(json),
+
+                    success: function (data) {
+                        $.each(data, function (key, value) {
+                            $("#Name").val(value.Name);
+                            $("#Email").val(value.Email);
+                            $("#DepartmentName").val(value.DepartmentName);
+                        });
+                    }
+                });
+            });
+            
+
+            $("#StudentId").on("change", function () {
+                var StudentId = $(this).val();
+
+                var particalView = $("#particalViewTable");
+                $.ajax({
+                    type: "GET",
+                    url: "@Url.Action("loadResultInfo", "Result")",
+                    data: { "StudentId": StudentId },
+                    success: function (data) {
+                        particalView.html(data);
+                    },
+               });
+            });
+            
+
+
+        });
+    </script>
+}
+

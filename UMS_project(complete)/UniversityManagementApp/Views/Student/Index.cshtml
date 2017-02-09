@@ -1,0 +1,89 @@
+﻿@using System.Collections.Specialized
+@using System.Web.UI.WebControls
+@model UniversityManagementApp.Models.Student
+<link href="~/tablestyle.css" rel="stylesheet" />
+@{
+    ViewBag.Title = "Student";
+    Layout = "~/Views/_Layout.cshtml";
+}
+
+ 
+
+
+@using (Html.BeginForm("Save", "Student", FormMethod.Post))
+{
+    <fieldset style="width: 800px;margin: 50px auto">
+        <legend style="font-size: xx-large">Register Student</legend>
+        <table style="margin: 20px auto">
+
+            <tr>
+                <td> @Html.LabelFor(m => m.Name)</td>
+                <td>
+                    @Html.TextBoxFor(m => m.Name, new {})
+                    @Html.ValidationMessageFor(model => model.Name)
+                </td>
+            </tr>
+
+            <tr>
+                <td>@Html.LabelFor(m => m.Email)</td>
+                <td>
+                    @Html.TextBoxFor(m => m.Email, new {})
+                    @Html.ValidationMessageFor(model => model.Email)
+                </td>
+            </tr>
+
+            <tr>
+                <td> @Html.LabelFor(m => m.ContactNo)</td>
+                <td>
+                    @Html.TextBoxFor(m => m.ContactNo, new {})
+                    @Html.ValidationMessageFor(model => model.ContactNo)
+                </td>
+            </tr>
+
+            <tr data-provide="datepicker">
+                <td> @Html.LabelFor(m => m.Date)</td>
+                <td>
+                    @Html.TextBoxFor(m => m.Date, new {})
+                    @Html.ValidationMessageFor(model => model.Date)
+                </td>
+            </tr>
+            <tr>
+                <td> @Html.LabelFor(m => m.Address)</td>
+                <td>
+                    @Html.TextAreaFor(m => m.Address, new {})
+                    @Html.ValidationMessageFor(model => model.Address)
+                </td>
+            </tr>
+
+            <tr>
+                <td>@Html.Label("Department")</td>
+                <td>
+                    @Html.DropDownListFor(m => m.DepartmentId, new SelectList(ViewBag.departmentList, "Id", "Name"), "Please Select Department", new {})
+                    @Html.ValidationMessageFor(model => model.DepartmentId)
+                </td>
+            </tr>
+
+            <tr>
+                <td></td>
+                <td><input type="submit" value="Save"/></td>
+            </tr>
+        </table>
+        @if (ViewBag.Message != null)
+        {
+            <p>@ViewBag.Message</p>
+        }
+    </fieldset>
+}
+
+
+@section scripts
+{
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    
+    <script>
+        $(function () {
+           $('.datepicker').datepicker();
+        });
+    </script>
+}
+

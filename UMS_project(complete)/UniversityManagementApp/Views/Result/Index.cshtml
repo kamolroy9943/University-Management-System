@@ -1,0 +1,142 @@
+﻿@using System.Collections.Specialized
+@using System.Web.UI.WebControls
+@model UniversityManagementApp.Models.Result
+
+@{
+    ViewBag.Title = "Result Entry";
+    Layout = "~/Views/_Layout.cshtml";
+}
+ 
+
+
+<p  style="display: none;"></p>
+
+
+<fieldset style="width: 600px; margin: 50px auto;">
+    <legend style="font-size: xx-large">Save Result</legend><table>
+        @using (Html.BeginForm("saveResult", "Result", FormMethod.Post, new {id = "resultEntry"}))
+        {
+            <tr>
+                <td>@Html.Label("Student Registration Number")</td>
+                <td > @Html.DropDownListFor(m => m.StudentId, new SelectList(ViewBag.studentList, "StudentId", "RegistrationNo"), "Please Select Reg. No.", new {})
+                    @Html.ValidationMessageFor(m => m.StudentId)</td>
+            </tr>
+
+            <tr>
+                <td > @Html.LabelFor(m => m.Name)</td>
+                <td > @Html.TextBoxFor(m => m.Name, new {PlaceHolder = "Name", @readonly = "readonly"})
+                    @Html.ValidationMessageFor(model => model.Name)</td>
+            </tr>
+
+            <tr >
+                <td > @Html.LabelFor(m => m.Email)</td>
+                <td > @Html.TextBoxFor(m => m.Email, new {PlaceHolder = "Email", @readonly = "readonly"})
+                    @Html.ValidationMessageFor(model => model.Email)</td>
+            </tr>
+
+            <tr>
+                <td > @Html.LabelFor(m => m.DepartmentName)</td>
+                <td > @Html.TextBoxFor(m => m.DepartmentName, new {PlaceHolder = "Department", @readonly = "readonly"})
+                    @Html.ValidationMessageFor(model => model.DepartmentName)
+                    <input type="hidden" name="DepartmentId" id="DepartmentId"/></td>
+            </tr>
+
+            <tr>
+                <td > <label for="CourseCodeLabel">Course Code</label></td>
+                <td > @Html.DropDownListFor(m => m.CourseId, new SelectList("", ""), "Please Select a Course", new {})
+                    @Html.ValidationMessageFor(m => m.CourseId)</td>
+            </tr>
+
+            <tr>
+                <td > @Html.LabelFor(m => m.Grade)</td>
+                <td > @Html.DropDownListFor(m => m.Grade, new SelectList(ViewBag.Grades, "GradeName", "GradeName"), "Please Select Grade", new {})
+                    @Html.ValidationMessageFor(model => model.Grade)</td>
+            </tr>
+
+            <tr>
+                <td></td>
+                <td> <input type="submit" value="Save"/> </td>
+            </tr>
+        }
+    </table>
+</fieldset>
+
+
+@section scripts
+{
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+
+    <script>
+        $(function () {
+            
+            $("#StudentId").change(function () {
+                var StudentId = $(this).val();
+                var json = { StudentId: StudentId };
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("GetStudentById", "EnrollCourse")',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(json),
+
+                    success: function (data) {
+                        $.each(data, function (key, value) {
+                            $("#Name").val(value.Name);
+                            $("#Email").val(value.Email);
+                            $("#DepartmentName").val(value.DepartmentName);
+                            getEnrollCourse(StudentId);
+                        });
+                    }
+                });
+            });
+
+            function getEnrollCourse(StudentId) {
+                var json = { StudentId: StudentId };
+                $("#CourseId").empty();
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("GetEnrollCourses", "Result")',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(json),
+                    success: function (data) {
+                        $("#CourseId").prepend("<option value=''>Please Select a Course</option>").val('');
+                        $.each(data, function (key, value) {
+                            $("#CourseId").append('<option value=' + value.Id + '>' + value.Name + '</option>');
+                        });
+                    }
+                });
+            }
+
+            $("#resultEntry").on("submit", function (e) {
+                e.preventDefault();
+
+                var StudentId = $("#StudentId").val();
+                var CourseId = $("#CourseId").val();
+                var Grade = $("#Grade").val();
+                
+                var json = { StudentId: StudentId, CourseId: CourseId, Grade: Grade };
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("saveResult", "Result")',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(json),
+                    success: function (data) {
+                        if (data.msg == "Saved") {
+                            $(".bg-info").text("Save Successfully.").show();
+                            $("#resultEntry")[0].reset();
+                            return;
+                        } else if (data.msg == "Exist") {
+                            alert("Grade for this course already exists.");
+                            return;
+                        } else if (data.msg == "Required") {
+                            alert("Please select required field.");
+                            return;
+                        }
+                    }
+                });
+            });
+
+
+        });
+    </script>
+}
+

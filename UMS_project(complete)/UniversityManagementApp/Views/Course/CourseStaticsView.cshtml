@@ -1,0 +1,46 @@
+﻿@model UniversityManagementApp.Models.CourseStaticsViewModel
+<link href="~/tablestyle.css" rel="stylesheet"/>
+<style>th{background-color: gray;}</style>
+@{
+    ViewBag.Title = "View Course Statics";
+    Layout = "~/Views/_Layout.cshtml";
+}
+
+ 
+
+<fieldset style="width: 600px;margin: 50px auto">
+    <legend style="font-size: xx-large">View Course Statics</legend>
+    @using (Html.BeginForm("Save", "Student", FormMethod.Post))
+         {
+             <div >
+                 @Html.Label("Department")
+                 @Html.DropDownListFor(m => m.DepartmentId, new SelectList(ViewBag.departmentList, "Id", "Name"), "Please Select Department", new {@class = "form-control", id = "departmentId"})
+                 @Html.ValidationMessageFor(model => model.DepartmentId)
+             </div>
+         }
+</fieldset>
+
+ 
+    <div id="particalViewTable"></div> 
+
+@section scripts{
+
+    <script>
+        $(document).ready(function () {
+            $("#departmentId").on("change", function () {
+                var v = $(this).val();
+
+                var particalView = $("#particalViewTable");
+                $.ajax({
+                    type: "GET",
+                    url: "@Url.Action("loadCourseInfo", "Course")",
+                    data: { "departmentId": v },
+                    success: function (data) {
+                        particalView.html(data);
+                    },
+                });
+            });
+        });
+    </script>
+
+}

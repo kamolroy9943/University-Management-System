@@ -1,0 +1,65 @@
+﻿@model UniversityManagementApp.Models.Course
+
+@{
+    ViewBag.Title = "Unassign Course";
+    Layout = "~/Views/_Layout.cshtml";
+}
+
+
+ 
+
+    <p  style="display: none;"></p>
+
+
+<form method="post" action="UnassignAllCourse" id="Unassigncourse">
+    <fieldset style="width: 450px; height: 200px; margin: 50px auto">
+        <legend style="font-size: xx-large">Unassign All Course</legend>
+
+        <form style="margin: 10px auto"><input type="button" value="Unassign Courses" id="unassignCourses" style="padding: 20px 40px;padding: 20px 40px; margin-left: 112px;  margin-top: 36px;"/></form>
+        
+    </fieldset>
+
+</form>
+
+@section scripts{
+    
+<script>
+
+    $(document).ready(function () {
+        $("#unassignCourses").on("click", function () {
+
+            var decision = confirm("Are you sure to unassign all courses?");
+
+            if (decision == true) {
+
+                var jsonData = { decision: decision };
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("UnassignAllCourse", "EnrollCourse")',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(jsonData),
+                    dataType: "json",
+                    success: function (data) {
+
+                        if (data == true) {
+
+                            $(".bg-info").text("All Courses Are Unassigned Successffully !").show();
+                        }
+                        else
+                        {
+                            $(".bg-info").text("No Courses Are Available to Unassign !").show();
+                        }
+                    },
+                });
+
+            }
+            return false;
+
+        });
+    });
+
+</script>
+    
+}
+
+

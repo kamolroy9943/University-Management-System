@@ -1,0 +1,180 @@
+﻿@model UniversityManagementApp.Models.AllocateClassRomm
+<link href="~/tablestyle.css" rel="stylesheet" />
+@{
+    ViewBag.Title = "Allocate Class Room";
+    Layout = "~/Views/_Layout.cshtml";
+}
+
+<h1></h1>
+
+@if (ViewBag.Message != null)
+{
+    <p>@ViewBag.Message</p>
+}
+
+
+@using (Html.BeginForm("Save", "AllocateClassRoom", FormMethod.Post, new { id = "roomEntry" }))
+{
+    <fieldset style="width: 650px; margin: 50px auto">
+        <legend style="font-size: xx-large">Allocate Class Room</legend>
+        <table>
+            <tr>
+                <td>@Html.Label("Department")</td>
+                <td>
+                    @Html.DropDownListFor(m => m.DepartmenetId, new SelectList(ViewBag.departmentList, "Id", "Name"), "Please Select Department", new { required = "required" })
+                    @Html.ValidationMessageFor(m => m.DepartmenetId)
+                </td>
+            </tr>
+
+            <tr>
+                <td > <label for="CourseCodeLabel">Course</label></td>
+                <td > @Html.DropDownListFor(m => m.CourseId, new SelectList("", ""), "Please Select a Course", new {required = "required"})
+                    @Html.ValidationMessageFor(m => m.CourseId)</td>
+            </tr>
+
+            <tr>
+                <td> @Html.Label("Room")</td>
+                <td>
+                    @Html.DropDownListFor(m => m.RoomId, new SelectList(ViewBag.roomList, "Id", "RoomNumber"), "Please Select Room", new { required = "required" })
+                    @Html.ValidationMessageFor(m => m.RoomId)
+                </td>
+            </tr>
+
+            <tr>
+                <td> @Html.Label("Day")</td>
+                <td>
+                    @Html.DropDownListFor(m => m.Day, new SelectList(ViewBag.dayList, "Day", "Day"), "Please Select Day", new { required = "required" })
+                    @Html.ValidationMessageFor(m => m.Day)
+                </td>
+            </tr>
+       
+       
+            <tr>
+                    <td> @Html.Label("From")</td>
+                    <td>
+                        <select name="FromHour" id="FromHour" required="required">
+                            <option value=""></option>
+                            @for (int i = 0; i < 12; i++)
+                            {
+                                <option value="@i">@i</option>
+                            }
+
+                        </select>
+                        @Html.ValidationMessageFor(m => m.FromHour)
+                   
+                        <select name="FromMin" id="FromMin" required="required">
+                            <option value=""></option>
+                            @for (int i = 0; i < 60; i++)
+                            {
+                                <option value="@i">@i</option>
+                            }
+
+                        </select>
+                        @Html.ValidationMessageFor(m => m.FromHour)
+                     
+                     <input type="radio" name="FromDay" value="AM"/>AM 
+                    <input type="radio" name="FromDay" value="PM" checked="checked"/>PM</td>
+                </tr>
+
+                <td> @Html.Label("To")</td>
+            <td>
+                <select name="ToHour" id="FromHour" required="required">
+                    <option value=""></option>
+                    @for (int i = 0; i < 12; i++)
+                    {
+                        <option value="@i">@i</option>
+                    }
+
+                </select>
+                @Html.ValidationMessageFor(m => m.FromHour)
+
+                <select name="ToMin" id="FromHour" required="required">
+                    <option value=""></option>
+                    @for (int i = 0; i < 60; i++)
+                    {
+                        <option value="@i">@i</option>
+                    }
+
+                </select>
+                @Html.ValidationMessageFor(m => m.FromHour)
+
+                <input type="radio" name="ToDay" value="AM"/>AM
+                <input type="radio" name="ToDay" value="PM" checked="checked"/>PM</td>
+
+            <tr>
+                <td></td>
+                <td><input type="submit" value="Save" /></td>
+            </tr>
+
+        </table>
+      
+
+
+     
+
+    </fieldset>
+}
+   
+
+@section Scripts{
+
+    <script>
+        $(function () {
+
+            $("#DepartmenetId").on("change", function () {
+
+                var departmentId = $(this).val();
+                var json = { departmentId: departmentId };
+                $("#CourseId").empty();
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("GetCoursesByDepartment", "AllocateClassRoom")',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(json),
+                    success: function (data) {
+                        $("#CourseId").prepend("<option value=''>Please Select a Course</option>").val('');
+                        $.each(data, function (key, value) {
+                            $("#CourseId").append('<option value=' + value.Id + '>' + value.Name + '</option>');
+                        });
+                    }
+                });
+            });
+            
+            
+
+            @*$("#roomEntry").on("submit", function (e) {
+                e.preventDefault();
+
+                var StudentId = $("#StudentId").val();
+                var CourseId = $("#CourseId").val();
+                var Grade = $("#Grade").val();
+
+                var json = { StudentId: StudentId, CourseId: CourseId, Grade: Grade };
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("saveResult", "Result")',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(json),
+                    success: function (data) {
+                        if (data.msg == "Saved") {
+                            $(".bg-info").text("Save Successfully.").show();
+                            $("#resultEntry")[0].reset();
+                            return;
+                        } else if (data.msg == "Exist") {
+                            alert("Grade for this course already exists.");
+                            return;
+                        } else if (data.msg == "Required") {
+                            alert("Please select required field.");
+                            return;
+                        }
+                    }
+                });
+            });*@
+
+
+        });
+</script>
+
+}
+
+

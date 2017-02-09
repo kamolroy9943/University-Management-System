@@ -1,0 +1,27 @@
+﻿@model UniversityManagementApp.Models.Result
+
+<table >
+    <thead>
+        <tr>
+            <th>Course Code</th>
+            <th>Name</th>
+            <th>Grade</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var resultItem in ViewBag.resultViewList)
+        {
+            <tr>
+                <td>@resultItem.Code</td>
+                <td>@resultItem.Name</td>
+                <td>
+                    @(resultItem.Grade == "" ? "Not Graded Yet" : resultItem.Grade)
+                </td>
+            </tr>
+        }
+
+    </tbody>
+</table>
+
+
+

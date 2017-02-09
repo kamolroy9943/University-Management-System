@@ -1,0 +1,28 @@
+﻿@model UniversityManagementApp.Models.CourseStaticsViewModel
+<link href="~/tablestyle.css" rel="stylesheet" />
+<table>
+  
+        <tr>
+            <th>Code</th>
+            <th>Name</th>
+            <th>Semester</th>
+            <th>Assigned To</th>
+        </tr>
+   
+    
+        @foreach (var courseItem in ViewBag.courseStaticsViewList)
+        {
+            <tr>
+                <td>@courseItem.Code</td>
+                <td>@courseItem.Name</td>
+                <td>@courseItem.Semester</td>
+                <td>
+                   
+                    @(courseItem.AssignedTo == "" ? "Not Assigned Yet" : courseItem.AssignedTo)
+                </td>
+            </tr>
+        }
+        
+   
+</table>
+

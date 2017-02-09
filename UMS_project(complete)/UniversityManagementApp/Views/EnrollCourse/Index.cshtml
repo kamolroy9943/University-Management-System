@@ -1,0 +1,153 @@
+﻿@using System.Collections.Specialized
+@using System.Web.UI.WebControls
+@model UniversityManagementApp.Models.EnrollCourseViewModel
+
+@{
+    ViewBag.Title = "Enroll In a Course";
+    Layout = "~/Views/_Layout.cshtml";
+}
+
+
+
+@using (Html.BeginForm("saveEnroll", "EnrollCourse", FormMethod.Post, new { id = "enrollEntry" }))
+{
+    <fieldset style="width: 600px; margin: 50px auto">
+        <legend style="font-size: xx-large">Enroll In a Course</legend>
+        <table>
+            <tr>
+                <td> @Html.Label("Student Registration Number")</td>
+                <td>
+                    @Html.DropDownListFor(m => m.StudentId, new SelectList(ViewBag.studentList, "StudentId", "RegistrationNo"), "Please Select Reg. No.", new {})
+                    @Html.ValidationMessageFor(m => m.StudentId)
+                </td>
+            </tr>
+
+            <tr>
+                <td> @Html.LabelFor(m => m.Name)</td>
+                <td>
+                    @Html.TextBoxFor(m => m.Name, new {})
+                    @Html.ValidationMessageFor(model => model.Name)
+                </td>
+            </tr>
+
+            <tr>
+                <td> @Html.LabelFor(m => m.Email)</td>
+                <td>
+                    @Html.TextBoxFor(m => m.Email, new {})
+                    @Html.ValidationMessageFor(model => model.Email)
+                </td>
+            </tr>
+
+            <tr>
+                <td> @Html.LabelFor(m => m.DepartmentName)</td>
+                <td>
+                    @Html.TextBoxFor(m => m.DepartmentName, new {})
+                    @Html.ValidationMessageFor(model => model.DepartmentName)
+                    <input type="hidden" name="DepartmentId" id="DepartmentId"/>
+                </td>
+            </tr>
+
+            <tr>
+                <td> <label for="CourseCodeLabel">Course Code</label></td>
+                <td>
+                    <select id="CourseId" name="CourseId" required>
+                        <option value="">Select Course</option>
+                    </select>
+                </td>
+            </tr>
+
+            <tr>
+                <td> @Html.LabelFor(m => m.Date)</td>
+                <td>
+                    @Html.TextBoxFor(m => m.Date, new {})
+                    @Html.ValidationMessageFor(model => model.Date)
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td> <input type="submit" value="Enroll"/></td>
+            </tr>
+        </table>
+    </fieldset>
+}
+
+
+@section scripts
+{
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+
+    <script>
+        $(function () {
+            $('.datepicker').datepicker();
+
+            $("#StudentId").change(function () {
+
+                var StudentId = $(this).val();
+                $("#teacherId").empty();
+                var json = { StudentId: StudentId };
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("GetStudentById", "EnrollCourse")',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(json),
+
+                    success: function (data) {
+                        $.each(data, function (key, value) {
+                            $("#Name").val(value.Name);
+                            $("#Email").val(value.Email);
+                            $("#DepartmentName").val(value.DepartmentName);
+                            //var departId = $("#DepartmentId").val(value.DepartmentId);
+                            var departId = value.DepartmentId;
+                            getCourse(departId);
+                        });
+
+
+                    }
+                });
+            });
+
+            function getCourse(departId) {
+                var json = { DepartmentId: departId };
+                $("#CourseId").empty();
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("GetStudentCourses", "EnrollCourse")',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(json),
+                    success: function (data) {
+                        $.each(data, function (key, value) {
+                            $("#CourseId").append('<option value=' + value.Id + '>' + value.Name + '</option>');
+                        });
+                    }
+                });
+            }
+
+            $("#enrollEntry").on("submit", function (e) {
+                e.preventDefault();
+
+                var StudentId = $("#StudentId").val();
+                var CourseId = $("#CourseId").val();
+                var Date = $("#Date").val();
+                var json = { StudentId: StudentId, CourseId: CourseId, Date: Date };
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("saveEnroll", "EnrollCourse")',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(json),
+                    success: function (data) {
+                        if (data == true) {
+                            $(".bg-info").text("Save Successfully.").show();
+                            $("#enrollEntry")[0].reset();
+                        } else {
+                            alert("Student already enrolled in this course.");
+                            return;
+                        }
+                    }
+                });
+            });
+
+
+        });
+    </script>
+}
+
